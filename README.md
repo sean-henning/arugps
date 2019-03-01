@@ -1,8 +1,8 @@
 # arugps
 
-add api to global KEY
+add api key to querystring
 
 pip install -r requirements.txt
 
-python start.py
+python app.py
 
