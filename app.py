@@ -3,6 +3,7 @@
 from flask import Flask, jsonify, request
 import json
 import requests
+import os
 # import geocoder
 
 '''a google api alternative utilising the new HTML5 geolocation feature, not ideal if device has no ip :)'''
@@ -65,15 +66,15 @@ def reply_gps():
     ''' primitive cached based on rssi (closer to 0 is stronger, further away is weaker)
         if the strength falls below -50 then goolge api will be called otherwise the cache will be used '''
 
-    if rssi <= -50 :
-        gpsco = get_gps(bssid, channel)
-        with open('cache.txt', mode='w') as data:
-            data.write(gpsco)
-        data.close()
-    else:
+    if os.path.isfile('./cache.txt') and rssi <= -50 :
         with open('cache.txt', mode='r') as data:
             cached = data.read()
             gpsco = cached[0:-1]
+            data.close()
+    else:
+        gpsco = get_gps(bssid, channel)
+        with open('cache.txt', mode='w') as data:
+            data.write(gpsco)
             data.close()
 
     return gpsco, 201
